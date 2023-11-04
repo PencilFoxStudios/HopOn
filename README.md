@@ -5,6 +5,9 @@ A Discord bot that aims to take out the areas of frustration that come with choo
 Would you like to [view the list of commands](#commands) or [run the bot yourself](#running-locally)?
 
 
+## Invite
+You can invite/authorize the bot via [Discord](https://discord.com/oauth2/authorize?client_id=1170143056104788018&scope=bot&permissions=19456).
+
 ## Tech Stack
 
 | Technology | Purpose |
@@ -41,6 +44,13 @@ Once you got all those set up, the rest is easy! Just run ``npm run dev`` and yo
 ## Commands
 
 ### ``/review [steam_app_id]``
-A major feature of this bot is to be able to condense 100 of the most helpfully-rated reviews into one short executive summary thanks to the power of OpenAI! Don't know a steam app id off the top of your head? No problem! It makes use of Discord.js's autocomplete support. Just start typing the name of a game and click!
+A major feature of this bot is to be able to condense 100 of the most helpfully-rated reviews into one short executive summary thanks to the power of OpenAI! Don't know a steam app id off the top of your head? No problem! It makes use of Discord.js's autocomplete support. Just start typing the name of a game and click! (Please note that some games aren't supported, whether it be lack of reviews, or the Steam API returning a non-game)
+
+### ``/shared [@user_a] [@user_b] <@user_c> <@user_d> <@user_e> <@user_f>``
+Compare 2-6 users who **have all linked their Steam accounts to HopOn!** via their linked accounts' game library. This also returns an AI suggestion on how they should approach the situation, as well as what game(s) to try out that they all have!
+
+### ``/matchmaker <@user>``
+Scans all server members who have linked their accounts for games that match ``<@user>``'s (defaults to the person running the command), and returns a leaderboard consisting of (up to) the top 5.  
+
 
 <sup><sub>© Pencil Fox Studios</sub></sup>
