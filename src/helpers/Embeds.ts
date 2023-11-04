@@ -40,6 +40,7 @@ export function loading(loadingText: string = "Processing...") {
 }
 export function OpenAIPoweredFooter() {
     const embed = new EmbedBuilder()
+    .setColor(0x4fc1f1)
         .setFooter({
             text: "Powered by OpenAI / Pencil Fox Studios"
         })

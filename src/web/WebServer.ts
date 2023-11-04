@@ -32,7 +32,7 @@ export class WebServer {
 
     constructor(client: Client, HopOn: HopOnDBClient, EraserTail: EraserTailClient) {
         this.app.use(session({
-            secret: process.env.DATADOG_APPTOKEN!, // Replace with your own secret key
+            secret: "frick!", // Replace with your own secret key
             resave: false,
             saveUninitialized: false,
             cookie: { secure: false }

@@ -1,2 +1,46 @@
-# HopOn
-A Discord Bot that bridges the gap between "what should we play" and actually playing.
+<h1 style="display:flex;justify-content:center;align-items:center"><img src="https://i.ibb.co/bRz5Sqy/circle-Logo.png?size=1" alt="drawing" alt="HopOn Logo" width="50"/>&nbsp; HopOn!</h1>
+A Discord bot that aims to take out the areas of frustration that come with choosing a game to play. Put together in 24 hours for Wolfjaw Studios' WolfJam 2023.
+
+## Quick Jump!
+Would you like to [view the list of commands](#commands) or [run the bot yourself](#running-locally)?
+
+
+## Tech Stack
+
+| Technology | Purpose |
+| ----------- | ----------- |
+| Supabase | Linking user Steam IDs with their Discord IDs  |
+| NodeJS/TypeScript | Bot Infrastructure | 
+| OpenAI | For the brains of the bot! | 
+| Steam | Information about user reviews, as well as game catalog. | 
+| EraserTail | Pencil Fox Studios' proprietary [logging module](https://github.com/PencilFoxStudios/EraserTail)! | 
+
+
+## Running Locally
+
+It ain't easy. Not because of anything I did(n't), but because of the amount of keys you'll need. But if you're still up to the challenge go ahead and clone the repository and then run:
+```
+npm install
+```
+Then, make sure to create a .env file with the following template:
+```
+DISCORD_BOT_TOKEN=<YOUR_DISCORD_BOT_TOKEN>
+SUPABASE_TOKEN=<YOUR_SUPABASE_DB_TOKEN>
+SUPABASE_DATABASE_ID=<YOUR_SUPABASE_DB_ID>
+SUPABASE_URL=<YOUR_SUPABASE_DB_URL>
+DATADOG_APPTOKEN=<YOUR_DATADOG_APP_TOKEN>
+DATADOG_API_KEY=<YOUR_DATADOG_API_KEY>
+env=<"dev"|"prod">
+STEAM_API_KEY=<YOUR_STEAM_API_KEY>
+OPENAI_API_KEY=<YOUR_OPENAI_KEYH>
+```
+Yeah. I mean you don't have to include any DataDog keys, but EraserTail may yell at you that cloud logging is disabled, which is okay. It shouldn't affect the bot!
+
+Once you got all those set up, the rest is easy! Just run ``npm run dev`` and you'll be on your way!
+
+## Commands
+
+### ``/review [steam_app_id]``
+A major feature of this bot is to be able to condense 100 of the most helpfully-rated reviews into one short executive summary thanks to the power of OpenAI! Don't know a steam app id off the top of your head? No problem! It makes use of Discord.js's autocomplete support. Just start typing the name of a game and click!
+
+<sup><sub>© Pencil Fox Studios</sub></sup>
