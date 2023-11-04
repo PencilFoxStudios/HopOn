@@ -15,6 +15,7 @@ export default async function handleAutocomplete(client: Client, EraserTail: Era
     
     switch(focusedValue.name){
         case "steam-game":
+            
             let games = await Steam.getAppList();
             const choices:ApplicationCommandOptionChoiceData[] = [];
             games = games.filter((game:SteamAPI.App) => { return game.name.toLowerCase().includes(focusedValue.value.toLowerCase()) })

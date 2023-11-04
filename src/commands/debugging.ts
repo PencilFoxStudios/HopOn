@@ -25,7 +25,7 @@ export class Debugging extends PNFXCommand {
         try {
             const User = await HopOnClient.me()
             
-            EraserTail.log("Debug", await User.games.fetchOwnedGames())
+            EraserTail.log("Debug", await User.games.fetchRecentlyPlayedGames())
             await interaction.editReply({ embeds: [PNFXEmbeds.success("Debugging... Check console for output!")] })
         } catch (error) {
             if(error instanceof UserNotAuthenicatedWithSteamError){
