@@ -43,6 +43,10 @@ export const PNFXBotError = {
     PRETTY: "**You must fetch this game's Steam data before trying to get information!**",
     RAW: "You must fetch this game's Steam data before trying to get information!"
   },
+  "USER_A_AND_USER_B_ARE_THE_SAME": {
+    PRETTY: "**You cannot compare a user to themselves!**",
+    RAW: "You cannot compare a user to themselves!"
+  },
   "UNK": {
     PRETTY: "**Unknown Error**\nPlease contact the developers!",
     RAW: "Unknown Error!"

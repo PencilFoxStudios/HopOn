@@ -63,6 +63,77 @@ export function user(user: User | null, customText = user?.tag ?? "Unknown User"
         })
     return embed
 }
+function shuffle(array: any[]) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
+export function embedMatchmakerBoard(matchWithWho:User, board:{discord_id: string, matched_games:SteamGame[]}[]){
+    if(board.length == 0){
+        return new EmbedBuilder()
+        .setColor(0x1e1e79)
+
+        .setDescription("No users found! Try getting more people in your server...")
+
+    }
+    // trim board to top 5 people if it's over 5 people
+    if(board.length > 5){
+        board = board.slice(0, 5)
+    }
+    const desc = board.map((user, index) => {
+        let formatting = ""
+        switch(index){
+            case 0:
+                formatting = "# 🥇"
+                break;
+            case 1:
+                formatting = "## 🥈"
+                break;
+            case 2:
+                formatting = "### 🥉"
+                break;
+            default:
+                formatting = ""
+                break;
+        }
+        return `${formatting} <@${user.discord_id}> (#${index+1}) \n ${user.matched_games.length} games matched${user.matched_games.length > 0? `, including games such as ${ shuffle(user.matched_games).slice(0, 5).map((game) => {return game.getName()}).join(", ")}`:""}`
+    }).join("\n\n")
+    const embed = new EmbedBuilder()
+        .setColor(0x1e1e79)
+        .setAuthor({
+            name: `Who has the most similar games to ${matchWithWho.username}?`, 
+            iconURL: matchWithWho.avatarURL() ?? undefined
+        })
+        .setDescription(desc)
+    return embed
+}
+export function embedCommonGames(UserA:User, UserB:User, CommonGames: SteamGame[], AdditionalUsers?: User[]){
+    const embed = new EmbedBuilder()
+        .setColor(0x1e1e79)
+        .setTitle(`${CommonGames.length} Common Games`)
+        .setAuthor({
+            name: UserA.username, 
+            iconURL: UserA.avatarURL() ?? undefined
+        })
+        .setFooter({
+            text: UserB.username + (AdditionalUsers?` and ${AdditionalUsers.length} other${AdditionalUsers.length > 1? "s": ""}`:""),
+            iconURL: UserB.avatarURL() ?? undefined
+        })
+        .setDescription(CommonGames.length == 0?"*No Common Games!*":CommonGames.map((game) => {return `[${game.getName()}](https://store.steampowered.com/app/${game.getID()})`}).join(", "))
+    return embed
+}
 // export function steamGameInfo(steamGame: SteamGame){
 //     const embed = new EmbedBuilder()
 //         .setColor(0x1e1e79)

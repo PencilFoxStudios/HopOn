@@ -90,7 +90,7 @@ export class WebServer {
         });
 
         this.app.get('/', (request, response) => {
-            response.send("I AM ALIVE.");
+            this.Discord.isReady() ? response.send("I AM ALIVE.") : response.status(500).send("I AM NOT ALIVE.");
         });
         this.app.get('/auth', (req, res, next) => {
             req.session.discordUserId = req.query.discordUserId as string;

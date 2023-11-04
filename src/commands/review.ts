@@ -41,7 +41,7 @@ export class Review extends PNFXCommand {
             }
             try {
                 const Game = await HopOnClient.getGame(SteamGameID);
-                const IntroEmbed = PNFXEmbeds.info(`Review of ${Game.getName()}`).setImage(Game.getHeaderImage()).setDescription(`[Game Link](https://store.steampowered.com/app/${Game.getSteamAppID()})`);
+                const IntroEmbed = PNFXEmbeds.info(`Review of ${Game.getName()}`).setImage(Game.getHeaderImage()).setDescription(`[Game Link](https://store.steampowered.com/app/${Game.getID()})`);
                 
                 let review = "";
                 let updatedIn = 0;

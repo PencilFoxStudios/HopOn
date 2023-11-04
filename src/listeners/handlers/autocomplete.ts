@@ -15,10 +15,11 @@ export default async function handleAutocomplete(client: Client, EraserTail: Era
     
     switch(focusedValue.name){
         case "steam-game":
-            
+            if(!focusedValue.value) return await interaction.respond([]);
+            if(focusedValue.value.length < 3) return await interaction.respond([]);
             let games = await Steam.getAppList();
             const choices:ApplicationCommandOptionChoiceData[] = [];
-            games = games.filter((game:SteamAPI.App) => { return game.name.toLowerCase().includes(focusedValue.value.toLowerCase()) })
+            games = games.filter((game:SteamAPI.App) => { return game.name.toLowerCase().startsWith(focusedValue.value.toLowerCase()) })
             let index = 0;
             games.forEach((game) => {
                 index++;

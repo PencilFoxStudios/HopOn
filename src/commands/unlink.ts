@@ -5,15 +5,15 @@ import { PNFXCommand } from "../Command";
 import * as PNFXEmbeds from "../helpers/Embeds"
 import PNFXMenu from "../helpers/Menu"
 import { HopOnDBClient } from "../api/HopOnDBClient";
-import { UserNotAuthenicatedWithSteamError } from "../errors/Errors";
+import { UserNotAuthenicatedWithSteamError, UserNotAuthenicatedWithSteamWithoutLinkError } from "../errors/Errors";
 import { HopOnError } from "../errors/HopOnError";
-export class Debugging extends PNFXCommand {
+export class Unlink extends PNFXCommand {
     constructor() {
         super(
             // Command Name
-            "debugging",
+            "unlink",
             // Command Description
-            "debug",
+            "Unlink your Steam account from HopOn!",
             // Supported Methods of Running
             ["SLASH"],
             // Should I make the user the only one able to see the reply?
@@ -26,9 +26,15 @@ export class Debugging extends PNFXCommand {
             const User = await HopOnClient.me()
             
             EraserTail.log("Debug", await User.games.fetchRecentlyPlayedGames())
-            await interaction.editReply({ embeds: [PNFXEmbeds.success("Debugging... Check console for output!")] })
+            
+            await HopOnClient.deleteUser(interaction.user.id);
+            await interaction.editReply({ embeds: [PNFXEmbeds.success("You have been successfully unlinked!")] })
         } catch (error) {
-            if(error instanceof UserNotAuthenicatedWithSteamError){
+            if((error instanceof UserNotAuthenicatedWithSteamError) || (error instanceof UserNotAuthenicatedWithSteamWithoutLinkError)){
+                await interaction.editReply({ embeds: [PNFXEmbeds.success("You are already unlinked!")] })
+                return;
+            }
+            if(error instanceof HopOnError){
                 await interaction.editReply({ embeds: [error.getEmbed()] })
                 return;
             }

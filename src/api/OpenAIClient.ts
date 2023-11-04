@@ -10,7 +10,11 @@ export class OpenAIClient {
     }
 
     async prompt(feedTheAIData:string, userPrompt:string, stream:boolean=false){
-        console.log("What.")
+        // trim to 3000 characters if it's longer than that
+        if(feedTheAIData.length > 3000){
+            feedTheAIData = feedTheAIData.substring(0, 3000);
+        }
+        console.log(feedTheAIData.length)
         const str =  await this.OpenAI.chat.completions.create({
             messages: [this.introPrompt, {role: 'system', content: feedTheAIData}, { role: 'user', content: userPrompt }],
             stream: stream,
@@ -19,7 +23,11 @@ export class OpenAIClient {
         return str;
     }
     async promptStream(feedTheAIData:string, userPrompt:string){
-        console.log("What.")
+        // trim to 3000 characters if it's longer than that
+        if(feedTheAIData.length > 3000){
+            feedTheAIData = feedTheAIData.substring(0, 3000);
+        }
+        console.log(feedTheAIData)
         const str =  this.OpenAI.beta.chat.completions.stream({
             messages: [this.introPrompt, {role: 'system', content: feedTheAIData}, { role: 'user', content: userPrompt }],
             model: 'gpt-3.5-turbo',

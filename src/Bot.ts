@@ -26,7 +26,7 @@ const EraserTail = new EraserTailClient({
 })
 EraserTail.log("Info", "Bot is starting...");
 
-const client = new Client({
+export const client = new Client({
   intents: [IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildBans]
 });
 ready(client, EraserTail);

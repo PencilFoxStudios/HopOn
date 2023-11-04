@@ -225,3 +225,7 @@ export async function getUserStaffRole(userID: string, guild: Guild, EraserTail:
         return null
     }
 }
+
+export function removeArrayDuplicates(array:any[]){
+    return [...new Set(array)];
+}

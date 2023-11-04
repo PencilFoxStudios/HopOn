@@ -7,7 +7,7 @@ import { OpenAIClient } from '../api/OpenAIClient';
 import { ChatCompletion, ChatCompletionChunk } from 'openai/resources';
 import { Stream } from 'openai/streaming';
 import { ChatCompletionStream } from 'openai/lib/ChatCompletionStream';
-const Steam:steam = new SteamAPI(process.env.STEAM_API_KEY!);
+const Steam:steam = new SteamAPI(process.env.STEAM_API_KEY!, {enabled: true});
 export interface HopOnRecentlyPlayedGame{
     name:string;
     appID:number;
@@ -182,14 +182,35 @@ export class SteamGame{
         // Replace with a specific type if available
         notes: string | null;
     }|undefined;
-    constructor(appID:string){
+    supportsMultiplayer: boolean|undefined;
+    constructor(appID:string, name?:string, fetchedParams?:{type?:string, name?:string, steam_appid?:number, required_age?:number, is_free?:boolean, controller_support?:string, dlc?:number[], detailed_description?:string, about_the_game?:string, short_description?:string, supported_languages?:string, header_image?:string, capsule_image?:string, capsule_imagev5?:string, website?:string, pc_requirements?:{ minimum: string; recommended: string; }, mac_requirements?:{ minimum: string; recommended: string; }, linux_requirements?:{ minimum: string; recommended: string; }, legal_notice?:string, ext_user_account_notice?:string, developers?:string[], publishers?:string[], package_groups?:any[], platforms?:{ windows: boolean; mac: boolean; linux: boolean; }, categories?:{ id: number; description: string; }[], genres?:{ id: string; description: string; }[], 
+        screenshots?:{ id: number; path_thumbnail: string; path_full: string; }[], movies?:{}}, supportsMultiplayer?:boolean){
         this.appID = appID;
+        this.name = name;
+        for (const [key, value] of Object.entries(fetchedParams??{})) {
+            // @ts-ignore
+            this[key] = value;
+        }
+        this.supportsMultiplayer = supportsMultiplayer;
     }
-   
+    
+    isMultiplayer(){
+        if(this.supportsMultiplayer == undefined){
+            throw new SteamGameNotFetchedError();
+        }
+        return this.supportsMultiplayer;
+    }
+
+
+
     async fetchDetails(): Promise<SteamGame>{
         
         try {
-            const details = (await Steam.getGameDetails(this.appID)) as unknown as GameDetails;
+            let details;
+            
+            details = (await Steam.getGameDetails(this.appID)) as unknown as GameDetails;
+
+            this.fetched = true;
             this.type = details.type;
             this.name = details.name;
             this.steam_appid = details.steam_appid;
@@ -225,9 +246,9 @@ export class SteamGame{
             this.background = details.background;
             this.background_raw = details.background_raw;
             this.content_descriptors = details.content_descriptors;
-            this.fetched = true;
+            
         } catch (error) {
-            throw new GameNotFoundError();
+            throw error;
         }
         return this
     }
@@ -238,164 +259,159 @@ export class SteamGame{
      * Getters
      */
     getType(): string {
-        if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+        if(!this.type){
+            throw new SteamGameNotFetchedError("Type");
         }
         return this.type!;
     }
     getName(): string {
-        if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+        if(!this.name){
+            throw new SteamGameNotFetchedError("Name");
         }
         return this.name!;
     }
-    getSteamAppID(): number {
-        if(!this.fetched){
-            throw new SteamGameNotFetchedError();
-        }
-        return this.steam_appid!;
-    }
+
     getRequiredAge(): number {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Required Age");
         }
         return this.required_age!;
     }
     isFree(): boolean {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Is Free");
         }
         return this.is_free!;
     }
     getControllerSupport(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Controller Support");
         }
         return this.controller_support!;
     }
     getDLC(): number[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("DLC");
         }
         return this.dlc!;
     }
     getDetailedDescription(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Detailed Description");
         }
         return this.detailed_description!;
     }
     getAboutTheGame(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("About The Game");
         }
         return this.about_the_game!;
     }
     getShortDescription(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Short Description");
         }
         return this.short_description!;
     }
     getSupportedLanguages(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Supported Languages");
         }
         return this.supported_languages!;
     }
     getHeaderImage(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Header Image");
         }
         return this.header_image!;
     }
     getCapsuleImage(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Capsule Image");
         }
         return this.capsule_image!;
     }
     getCapsuleImageV5(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Capsule Image V5");
         }
         return this.capsule_imagev5!;
     }
     getWebsite(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Website");
         }
         return this.website!;
     }
     getPCRequirements(): { minimum: string; recommended: string; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("PC Requirements");
         }
         return this.pc_requirements!;
     }
     getMacRequirements(): { minimum: string; recommended: string; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Mac Requirements");
         }
         return this.mac_requirements!;
     }
     getLinuxRequirements(): { minimum: string; recommended: string; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Linux Requirements");
         }
         return this.linux_requirements!;
     }
     getLegalNotice(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Legal Notice");
         }
         return this.legal_notice!;
     }
     getExtUserAccountNotice(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Ext User Account Notice");
         }
         return this.ext_user_account_notice!;
     }
     getDevelopers(): string[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Developers");
         }
         return this.developers!;
     }
     getPublishers(): string[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Publishers");
         }
         return this.publishers!;
     }
     getPackageGroups(): any[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Package Groups");
         }
         return this.package_groups!;
     }
     getPlatforms(): { windows: boolean; mac: boolean; linux: boolean; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Platforms");
         }
         return this.platforms!;
     }
     getCategories(): { id: number; description: string; }[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Categories");
         }
         return this.categories!;
     }
     getGenres(): { id: string; description: string; }[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Genres");
         }
         return this.genres!;
     }
     getScreenshots(): { id: number; path_thumbnail: string; path_full: string; }[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Screenshots");
         }
         return this.screenshots!;
     }
@@ -407,13 +423,13 @@ export class SteamGame{
         highlight: boolean;
     }[] {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Movies");
         }
         return this.movies!;
     }
     getRecommendations(): { total: number; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Recommendations");
         }
         return this.recommendations!;
     }
@@ -421,31 +437,31 @@ export class SteamGame{
         total: number; highlighted: any[]; // Replace with a specific type if available
     } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Achievements");
         }
         return this.achievements!;
     }
     getReleaseDate(): { coming_soon: boolean; date: string; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Release Date");
         }
         return this.release_date!;
     }
     getSupportInfo(): { url: string; email: string; } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Support Info");
         }
         return this.support_info!;
     }
     getBackground(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Background");
         }
         return this.background!;
     }
     getBackgroundRaw(): string {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Background Raw");
         }
         return this.background_raw!;
     }
@@ -455,7 +471,7 @@ export class SteamGame{
         notes: string | null;
     } {
         if(!this.fetched){
-            throw new SteamGameNotFetchedError();
+            throw new SteamGameNotFetchedError("Content Descriptors");
         }
         return this.content_descriptors!;
     }
@@ -464,7 +480,7 @@ export class SteamGame{
     
 
     async getReviews() : Promise<SteamReview[]>{
-        return await this.HopOn.getAppReviews(this.getSteamAppID());
+        return await this.HopOn.getAppReviews(parseInt(this.getID()));
     }
     async getChatGPTReviewSummary(streamCallback?:(part:ChatCompletionChunk, stream:Stream<ChatCompletionChunk>) => void) : Promise<string|void>{
         const prompty = `For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`;
