@@ -62,7 +62,7 @@ export class Shared extends PNFXCommand {
             try {
                 await UserA.fetchSteamInfo();
                 const UserArgs = [UserB, UserC, UserD, UserE, UserF].filter((user) => user != undefined) as SteamUser[];
-                const Match = await UserA.specificUsersMatchmaker(UserArgs)
+                let Match = await UserA.specificUsersMatchmaker(UserArgs)
                 let AdditionalUsers:User[]|undefined = [ReferenceUserC, ReferenceUserD, ReferenceUserE, ReferenceUserF].filter((user) => user != undefined) as User[];
                 if(AdditionalUsers.length == 0){
                     AdditionalUsers = undefined;
@@ -70,6 +70,24 @@ export class Shared extends PNFXCommand {
                 let review = "";
                 await interaction.editReply({ embeds: [PNFXEmbeds.loading("*I'm thinking...*"), PNFXEmbeds.embedCommonGames(ReferenceUserA, ReferenceUserB, Match, AdditionalUsers), PNFXEmbeds.OpenAIPoweredFooter()] })
                 let updatedIn = 0;
+                function shuffle(array: any[]) {
+                    let currentIndex = array.length,  randomIndex;
+                  
+                    // While there remain elements to shuffle.
+                    while (currentIndex > 0) {
+                  
+                      // Pick a remaining element.
+                      randomIndex = Math.floor(Math.random() * currentIndex);
+                      currentIndex--;
+                  
+                      // And swap it with the current element.
+                      [array[currentIndex], array[randomIndex]] = [
+                        array[randomIndex], array[currentIndex]];
+                    }
+                  
+                    return array;
+                  }
+                shuffle(Match);
                 const ReviewStream = await OpenAI.promptStream(`You have ${(AdditionalUsers !== undefined? AdditionalUsers.length: 0) + 2} users: ${ReferenceUserA.username}, ${ReferenceUserB.username}${AdditionalUsers !== undefined?", "+AdditionalUsers.map((user) => user.username).join(", "):""}.
                 They want to play a game together, but are trying to figure out what they should play.\nThey have the following games in common within each of their Steam libraries: \n- ${Match.map((game) => game.getName()).join("\n- ")}\n\n`, "Based on the following games we have in common, which one do you think we should try out together?")
 
