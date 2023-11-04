@@ -7,6 +7,7 @@ export default (client: Client, EraserTail: EraserTailClient): void => {
         if (!client.user || !client.application) {
             return;
         }
+
         let ShippedCommands: (UserApplicationCommandData | MessageApplicationCommandData | ChatInputApplicationCommandData)[] = []
         Commands.forEach((command: PNFXCommand) => {
             if (command.supports.includes("SLASH")) {

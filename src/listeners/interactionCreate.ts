@@ -11,7 +11,9 @@ import handleChatInputMessageContextOrUserContextCommand from "./handlers/chatin
 import handleAutocomplete from "./handlers/autocomplete"
 import handleModal from "./handlers/modal"
 import handleSelectMenu from "./handlers/selectMenu"
-export default (client: Client, EraserTail: EraserTailClient): void => {
+import SteamAPI from "steamapi";
+export default (client: Client, EraserTail: EraserTailClient, GAME_LIST:SteamAPI.App[]): void => {
+
     client.on("interactionCreate", async (interaction: Interaction) => {
         // Delete below if the bot support DMs.
         if (!interaction.guild) {
@@ -22,7 +24,7 @@ export default (client: Client, EraserTail: EraserTailClient): void => {
             await handleChatInputMessageContextOrUserContextCommand(client, EraserTail, interaction, PNFX_MEMBER);
         }
         if (interaction.isAutocomplete()) {
-            await handleAutocomplete(client, EraserTail, interaction, PNFX_MEMBER);
+            await handleAutocomplete(client, EraserTail, interaction, PNFX_MEMBER, GAME_LIST);
         }
         if (interaction.isButton()) {
             await handleButton(client, EraserTail, interaction, PNFX_MEMBER)

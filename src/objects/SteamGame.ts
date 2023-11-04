@@ -7,7 +7,11 @@ import { OpenAIClient } from '../api/OpenAIClient';
 import { ChatCompletion, ChatCompletionChunk } from 'openai/resources';
 import { Stream } from 'openai/streaming';
 import { ChatCompletionStream } from 'openai/lib/ChatCompletionStream';
+
+
+
 const Steam:steam = new SteamAPI(process.env.STEAM_API_KEY!, {enabled: true});
+
 export interface HopOnRecentlyPlayedGame{
     name:string;
     appID:number;

@@ -5,6 +5,7 @@ import interactionCreate from "./listeners/interactionCreate";
 import { WebServer } from "./web/WebServer";
 import 'dotenv/config'
 import { HopOnDBClient } from "./api/HopOnDBClient";
+import SteamAPI from "steamapi";
 const EraserTail = new EraserTailClient({
   APPLICATION_NAME: "HOPON" + process.env.env?`${process.env.env!.toUpperCase()}`:"",
   APPLICATION_NAME_HUMAN: "Hop On" + process.env.env?` ${process.env.env}`:"",
@@ -30,7 +31,10 @@ export const client = new Client({
   intents: [IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildBans]
 });
 ready(client, EraserTail);
-interactionCreate(client, EraserTail);
+const Steam:SteamAPI = new SteamAPI(process.env.STEAM_API_KEY!, { enabled: true });
+Steam.getAppList().then((gameList) => {
+  interactionCreate(client, EraserTail, gameList);
+})
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 

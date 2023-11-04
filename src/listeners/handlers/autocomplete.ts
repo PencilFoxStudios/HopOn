@@ -6,9 +6,9 @@ import * as PNFXEmbeds from "../../helpers/Embeds"
 import { HopOnDBClient } from "../../api/HopOnDBClient";
 import { modifierToString } from "../../helpers/functions";
 import SteamAPI from "steamapi";
-const Steam:SteamAPI = new SteamAPI(process.env.STEAM_API_KEY!, { enabled: true });
 
-export default async function handleAutocomplete(client: Client, EraserTail: EraserTailClient, interaction: AutocompleteInteraction, pnfxMember: PNFXMember): Promise<void> {
+
+export default async function handleAutocomplete(client: Client, EraserTail: EraserTailClient, interaction: AutocompleteInteraction, pnfxMember: PNFXMember, gamelist:SteamAPI.App[]): Promise<void> {
     const HopOnClient = new HopOnDBClient(interaction.user.id);
     const Player = (await HopOnClient.me());
     const focusedValue = interaction.options.getFocused(true);
@@ -17,7 +17,7 @@ export default async function handleAutocomplete(client: Client, EraserTail: Era
         case "steam-game":
             if(!focusedValue.value) return await interaction.respond([]);
             if(focusedValue.value.length < 3) return await interaction.respond([]);
-            let games = await Steam.getAppList();
+            let games = gamelist
             const choices:ApplicationCommandOptionChoiceData[] = [];
             games = games.filter((game:SteamAPI.App) => { return game.name.toLowerCase().startsWith(focusedValue.value.toLowerCase()) })
             let index = 0;
