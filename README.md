@@ -12,11 +12,12 @@ You can invite/authorize the bot via [Discord](https://discord.com/oauth2/author
 
 | Technology | Purpose |
 | ----------- | ----------- |
-| Supabase | Linking user Steam IDs with their Discord IDs  |
+| [Supabase](https://supabase.com) | Linking user Steam IDs with their Discord IDs  |
 | NodeJS/TypeScript | Bot Infrastructure | 
-| OpenAI | For the brains of the bot! | 
-| Steam | Information about user reviews, as well as game catalog. | 
-| EraserTail | Pencil Fox Studios' proprietary [logging module](https://github.com/PencilFoxStudios/EraserTail)! | 
+| OpenAI ([gpt-3.5-turbo](https://platform.openai.com/docs/models/gpt-3-5)) | For the brains of the bot! | 
+| [Steam Web API](https://partner.steamgames.com/doc/webapi_overview) | Information about user reviews, as well as game catalog. | 
+| [EraserTail](https://github.com/PencilFoxStudios/EraserTail) | Pencil Fox Studios' proprietary logging module! | 
+| [DigitalOcean App Platform](https://www.digitalocean.com/products/app-platform) | Bot Hosting | 
 
 
 ## Running Locally
