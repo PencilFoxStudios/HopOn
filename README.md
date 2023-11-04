@@ -43,6 +43,12 @@ Once you got all those set up, the rest is easy! Just run ``npm run dev`` and yo
 
 ## Commands
 
+### ``/link``
+Sends the link to authenticate your Steam account with HopOn! This is required at least once by all users involved if they want the bot to work when they get mentioned in a command.
+
+### ``/unlink``
+Unlinks your Steam account from HopOn!
+
 ### ``/review [steam_app_id]``
 A major feature of this bot is to be able to condense 100 of the most helpfully-rated reviews into one short executive summary thanks to the power of OpenAI! Don't know a steam app id off the top of your head? No problem! It makes use of Discord.js's autocomplete support. Just start typing the name of a game and click! (Please note that some games aren't supported, whether it be lack of reviews, or the Steam API returning a non-game)
 
