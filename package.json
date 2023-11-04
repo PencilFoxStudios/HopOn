@@ -1,0 +1,53 @@
+{
+  "name": "hop-on",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsx watch src/Bot.ts",
+    "start": "node dist/Bot.js",
+    "build": "npx tsup src/Bot.ts --minify",
+    "pull-types": "supabase gen types typescript --project-id \"cffdamgecyqzuxcwuiet\" --schema public > src/database.types.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PencilFoxStudios/PNFXDiscordBotTemplate.git"
+  },
+  "keywords": [
+    "discordjs"
+  ],
+  "author": "Pencil Fox Studios",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/PencilFoxStudios/PNFXDiscordBotTemplate/issues"
+  },
+  "homepage": "https://github.com/PencilFoxStudios/PNFXDiscordBotTemplate#readme",
+  "dependencies": {
+    "@pencilfoxstudios/erasertail": "^1.2.4",
+    "@supabase/supabase-js": "^2.38.4",
+    "@types/passport": "^1.0.14",
+    "@types/passport-steam": "^1.0.3",
+    "@types/steamapi": "^2.2.4",
+    "axios": "^1.6.0",
+    "discord.js": "^14.5.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "fastify": "^4.24.3",
+    "moment": "^2.29.4",
+    "openai": "^4.15.0",
+    "openid-client": "^5.6.1",
+    "passport": "^0.6.0",
+    "passport-steam": "^1.0.18",
+    "passport-steam-openid": "^1.0.2",
+    "shader": "^1.0.0",
+    "steamapi": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/express-session": "^1.17.9",
+    "@types/node": "^18.18.7",
+    "supabase": "^1.106.1",
+    "ts-node": "^10.9.1",
+    "typescript": "5.2"
+  }
+}
