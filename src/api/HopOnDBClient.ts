@@ -77,7 +77,7 @@ export class HopOnDBClient {
         console.log(`https://store.steampowered.com/appreviews/${AppID}?json=1&language=english&num_per_page=1000`)
         const data = await axios.get(`https://store.steampowered.com/appreviews/${AppID}?json=1&language=english&num_per_page=1000`)
         if(data.data){
-            return data.data.reviews as unknown as SteamReview[]
+            return data.data.reviews as SteamReview[]
         }else{
             throw new HopOnError("UNK", "No data returned from Steam!")
         }
