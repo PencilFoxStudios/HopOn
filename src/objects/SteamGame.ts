@@ -499,7 +499,7 @@ export class SteamGame{
         
     }
     async getChatGPTStreamReviewSummary() : Promise<ChatCompletionStream>{
-        return await OpenAI.promptStream(`For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`,
+        return await OpenAI.promptStream(`For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review.length > 200?review.review.slice(0,199):review}\n***\n`})}`,
         "What are people saying about this game?");
     }
 
