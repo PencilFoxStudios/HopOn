@@ -83,7 +83,19 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_games_in: {
+        Args: {
+          vals: string[]
+        }
+        Returns: {
+          app_id: string
+          created_at: string
+          id: number
+          multiplayer: boolean
+          name: string
+          type: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

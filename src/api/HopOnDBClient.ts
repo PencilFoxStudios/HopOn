@@ -116,7 +116,9 @@ export class HopOnDBClient {
         }
     }
     getAppsFromDBIfTheyExist = async (AppIDs: string[]): Promise<SteamGame[]> => {
-        let GAMES = supabase.from("games").select("*").in("app_id", AppIDs)
+        
+        let GAMES_RPC = supabase.rpc("get_games_in", { vals: AppIDs })
+        let GAMES = GAMES_RPC
         let { data, error } = (await GAMES);
         if (error) {
             throw new HopOnError("UNK", error.message)
