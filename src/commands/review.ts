@@ -62,7 +62,7 @@ export class Review extends PNFXCommand {
             } catch (error) {
                 if(error instanceof HopOnError){
                     await interaction.editReply({ embeds: [error.getEmbed()] })
-                    EraserTail.log("Error", error.message, error)
+                    EraserTail.log("Error", error.message, error.stack)
                     return;
                 }
             }

@@ -42,7 +42,7 @@ export class Matchmaker extends PNFXCommand {
                 }
                 if(error instanceof HopOnError){
                     await interaction.editReply({ embeds: [error.getEmbed()] })
-                    EraserTail.log("Error", error.message, error)
+                    EraserTail.log("Error", error.message, error.stack)
                     return;
                 }
                 throw error;
@@ -51,7 +51,7 @@ export class Matchmaker extends PNFXCommand {
         } catch (error) {
             if(error instanceof HopOnError){
                 await interaction.editReply({ embeds: [error.getEmbed()] })
-                EraserTail.log("Error", error.message, error)
+                EraserTail.log("Error", error.message, error.stack)
                 return;
             }
             throw error;
