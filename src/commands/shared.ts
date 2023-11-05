@@ -68,8 +68,6 @@ export class Shared extends PNFXCommand {
                     AdditionalUsers = undefined;
                 }
                 let review = "";
-                await interaction.editReply({ embeds: [PNFXEmbeds.loading("*I'm thinking...*"), PNFXEmbeds.embedCommonGames(ReferenceUserA, ReferenceUserB, Match, AdditionalUsers), PNFXEmbeds.OpenAIPoweredFooter()] })
-                let updatedIn = 0;
                 function shuffle(array: any[]) {
                     let currentIndex = array.length,  randomIndex;
                   
@@ -88,6 +86,9 @@ export class Shared extends PNFXCommand {
                     return array;
                   }
                 shuffle(Match);
+                await interaction.editReply({ embeds: [PNFXEmbeds.loading("*I'm thinking...*"), PNFXEmbeds.embedCommonGames(ReferenceUserA, ReferenceUserB, Match, AdditionalUsers), PNFXEmbeds.OpenAIPoweredFooter()] })
+                let updatedIn = 0;
+
                 const ReviewStream = await OpenAI.promptStream(`You have ${(AdditionalUsers !== undefined? AdditionalUsers.length: 0) + 2} users: ${ReferenceUserA.username}, ${ReferenceUserB.username}${AdditionalUsers !== undefined?", "+AdditionalUsers.map((user) => user.username).join(", "):""}.
                 They want to play a game together, but are trying to figure out what they should play.\nThey have the following games in common within each of their Steam libraries: \n- ${Match.map((game) => game.getName()).join("\n- ")}\n\n`, "Based on the following games we have in common, which one do you think we should try out together?")
 

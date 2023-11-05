@@ -48,7 +48,7 @@ export class Matchmaker extends PNFXCommand {
             }
 
         } catch (error) {
-            if(error instanceof UserNotAuthenicatedWithSteamError){
+            if(error instanceof HopOnError){
                 await interaction.editReply({ embeds: [error.getEmbed()] })
                 return;
             }
