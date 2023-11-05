@@ -111,6 +111,7 @@ export class Shared extends PNFXCommand {
                 }
                 if(error instanceof HopOnError){
                     await interaction.editReply({ embeds: [error.getEmbed()] })
+                    EraserTail.log("Error", error.message, error)
                     return;
                 }
                 throw error;
@@ -121,6 +122,7 @@ export class Shared extends PNFXCommand {
                 await interaction.editReply({ embeds: [error.getEmbed()] })
                 return;
             }
+            
             throw error;
         }
       
