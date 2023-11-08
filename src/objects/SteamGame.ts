@@ -3,16 +3,18 @@ import { Database } from '../database.types'
 import steam from "steamapi"
 import { GameNotFoundError, SteamGameNotFetchedError, SteamUserNotFetchedError } from '../errors/Errors';
 import { HopOnDBClient } from '../api/HopOnDBClient';
-import { OpenAIClient } from '../api/OpenAIClient';
+import { OpenAIClient, HopOnAI } from '../api/OpenAIClient';
 import { ChatCompletion, ChatCompletionChunk } from 'openai/resources';
 import { Stream } from 'openai/streaming';
 import { ChatCompletionStream } from 'openai/lib/ChatCompletionStream';
+import { SteamUser } from './SteamUser';
 
 
 
 const Steam:steam = new SteamAPI(process.env.STEAM_API_KEY!, {enabled: true});
 
 export interface HopOnRecentlyPlayedGame{
+    user: SteamUser,
     name:string;
     appID:number;
     playTime:number;
@@ -53,6 +55,7 @@ export interface SteamReview {
   }
 export type HopOnOwnedGame = HopOnRecentlyPlayedGame;
 const OpenAI:OpenAIClient =  new OpenAIClient()
+const HOAI:HopOnAI = new HopOnAI();
 export interface GameDetails {
     type: string;
     name: string;
@@ -486,6 +489,16 @@ export class SteamGame{
     async getReviews() : Promise<SteamReview[]>{
         return await this.HopOn.getAppReviews(parseInt(this.getID()));
     }
+
+    async getChatGPTReviewSummaryV2(responseCallback:(messages:string[]|undefined) => void){
+        const prompty = `For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`;
+        const Thread = await HOAI.init()
+        Thread.prompt(prompty, (messages:string[]|undefined) => {
+            responseCallback(messages);
+        })
+    }
+
+    /** @deprecated */
     async getChatGPTReviewSummary(streamCallback?:(part:ChatCompletionChunk, stream:Stream<ChatCompletionChunk>) => void) : Promise<string|void>{
         const prompty = `For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`;
         console.log(prompty)
@@ -502,6 +515,7 @@ export class SteamGame{
         }
         
     }
+    /** @deprecated */
     async getChatGPTStreamReviewSummary() : Promise<ChatCompletionStream>{
         const reviews = await this.getReviews();
         console.log(reviews)
