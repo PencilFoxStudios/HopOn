@@ -29,7 +29,7 @@
     "@types/passport-steam": "^1.0.3",
     "@types/steamapi": "^2.2.4",
     "axios": "^1.6.0",
-    "discord.js": "^14.13.0",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
@@ -48,6 +48,7 @@
     "@types/node": "^18.18.7",
     "supabase": "^1.106.1",
     "ts-node": "^10.9.1",
+    "tsup": "^8.0.1",
     "typescript": "5.2"
   }
 }
