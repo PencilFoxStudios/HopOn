@@ -11,8 +11,11 @@ export class OpenAIClient {
 
     async prompt(feedTheAIData:string, userPrompt:string, stream:boolean=false){
         // trim to 3000 characters if it's longer than that
-        if(feedTheAIData.length > 3000){
-            feedTheAIData = feedTheAIData.substring(0, 3000);
+        if(feedTheAIData.length > 30000){
+            feedTheAIData = feedTheAIData.substring(0, 30000);
+        }
+        if(userPrompt.length > 30000){
+            userPrompt = userPrompt.substring(0, 30000);
         }
         console.log(feedTheAIData.length)
         const str =  await this.OpenAI.chat.completions.create({
@@ -24,8 +27,11 @@ export class OpenAIClient {
     }
     async promptStream(feedTheAIData:string, userPrompt:string){
         // trim to 3000 characters if it's longer than that
-        if(feedTheAIData.length > 3000){
-            feedTheAIData = feedTheAIData.substring(0, 3000);
+        if(feedTheAIData.length > 30000){
+            feedTheAIData = feedTheAIData.substring(0, 30000);
+        }
+        if(userPrompt.length > 30000){
+            userPrompt = userPrompt.substring(0, 30000);
         }
         console.log(feedTheAIData)
         const str =  this.OpenAI.beta.chat.completions.stream({
