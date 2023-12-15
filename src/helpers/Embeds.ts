@@ -2,7 +2,7 @@ import { ColorResolvable, EmbedBuilder, EmbedField, User } from 'discord.js'
 import moment from 'moment'
 import * as PNFXTypes from "./types"
 import { modifierToString, specialNumbers } from './functions'
-import { SteamGame } from '../objects/SteamGame'
+import { HopOnOwnedGame, SteamGame } from '../objects/SteamGame'
 
 export function error(code: PNFXTypes.PNFXBotErrorCode = "UNK", moreInfo?: string): EmbedBuilder {
     const embed = new EmbedBuilder()
@@ -119,7 +119,7 @@ export function embedMatchmakerBoard(matchWithWho:User, board:{discord_id: strin
         .setDescription(desc)
     return embed
 }
-export function embedCommonGames(UserA:User, UserB:User, CommonGames: SteamGame[], AdditionalUsers?: User[]){
+export function embedCommonGames(UserA:User, UserB:User, CommonGames: { game: SteamGame, userData: HopOnOwnedGame[] }[], AdditionalUsers?: User[]){
     const embed = new EmbedBuilder()
         .setColor(0x1e1e79)
         .setTitle(`${CommonGames.length} Common Games`)
@@ -131,7 +131,7 @@ export function embedCommonGames(UserA:User, UserB:User, CommonGames: SteamGame[
             text: UserB.username + (AdditionalUsers?` and ${AdditionalUsers.length} other${AdditionalUsers.length > 1? "s": ""}`:""),
             iconURL: UserB.avatarURL() ?? undefined
         })
-        .setDescription(CommonGames.length == 0?"*No Common Games!*":CommonGames.map((game) => {return `[${game.getName()}](https://store.steampowered.com/app/${game.getID()})`}).join(", "))
+        .setDescription(CommonGames.length == 0?"*No Common Games!*":CommonGames.map((game) => {return `[${game.game.getName()}](https://store.steampowered.com/app/${game.game.getID()})`}).join(", "))
     return embed
 }
 // export function steamGameInfo(steamGame: SteamGame){

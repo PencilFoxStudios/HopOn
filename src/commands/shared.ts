@@ -48,21 +48,43 @@ export class Shared extends PNFXCommand {
             const HopOnClientUserD = ReferenceUserD?new HopOnDBClient(ReferenceUserD.id):undefined;
             const HopOnClientUserE = ReferenceUserE?new HopOnDBClient(ReferenceUserE.id):undefined;
             const HopOnClientUserF = ReferenceUserF?new HopOnDBClient(ReferenceUserF.id):undefined;
-            const UserA = await HopOnClientUserA.me()
-            const UserB = await HopOnClientUserB.me()
-            const UserC = HopOnClientUserC?await HopOnClientUserC.me():undefined
-            const UserD = HopOnClientUserD?await HopOnClientUserD.me():undefined
-            const UserE = HopOnClientUserE?await HopOnClientUserE.me():undefined
-            const UserF = HopOnClientUserF?await HopOnClientUserF.me():undefined
+            const UserA = {
+                SUser: await HopOnClientUserA.me(),
+                DUser: ReferenceUserA
+            }
+            const UserB = {
+                SUser: await HopOnClientUserB.me(),
+                DUser: ReferenceUserB
+            }
+            const UserC = ReferenceUserC?{
+                SUser: await HopOnClientUserC!.me(),
+                DUser: ReferenceUserC
+            }:undefined
+            const UserD = ReferenceUserD?{
+                SUser: await HopOnClientUserD!.me(),
+                DUser: ReferenceUserD
+            }:undefined
+            const UserE = ReferenceUserE?{
+                SUser: await HopOnClientUserE!.me(),
+                DUser: ReferenceUserE
+            }:undefined
+            const UserF = ReferenceUserF?{
+                SUser: await HopOnClientUserF!.me(),
+                DUser: ReferenceUserF
+            }:undefined
+
 
             if(ReferenceUserA.id == ReferenceUserB.id){
                 await interaction.editReply({ embeds: [PNFXEmbeds.error("USER_A_AND_USER_B_ARE_THE_SAME", "You cannot compare a user to themselves!")] })
                 return;
             }
             try {
-                await UserA.fetchSteamInfo();
-                const UserArgs = [UserB, UserC, UserD, UserE, UserF].filter((user) => user != undefined) as SteamUser[];
-                let Match = await UserA.specificUsersMatchmaker(UserArgs)
+                console.log("UserB", UserB)
+                await UserA.SUser.fetchSteamInfo();
+                const UserArgs = [UserA, UserB, UserC, UserD, UserE, UserF].filter((user) => user != undefined) as {SUser: SteamUser, DUser: User}[];
+                let Match = await UserA.SUser.specificUsersMatchmaker(UserArgs)
+                console.log("matchmap", Match)
+                console.log(UserArgs)
                 let AdditionalUsers:User[]|undefined = [ReferenceUserC, ReferenceUserD, ReferenceUserE, ReferenceUserF].filter((user) => user != undefined) as User[];
                 if(AdditionalUsers.length == 0){
                     AdditionalUsers = undefined;
@@ -89,8 +111,30 @@ export class Shared extends PNFXCommand {
                 await interaction.editReply({ embeds: [PNFXEmbeds.loading("*I'm thinking...*"), PNFXEmbeds.embedCommonGames(ReferenceUserA, ReferenceUserB, Match, AdditionalUsers), PNFXEmbeds.OpenAIPoweredFooter()] })
                 let updatedIn = 0;
 
+                // Sort each game by playtime in descending order
+                Match = Match.map((game) => {
+                    game.userData = game.userData.sort((a, b) => {
+                        return b.playTime - a.playTime;
+                    })
+                    return game;
+                })
+                // Sort the games by the greatest playtime of the first user
+
+                Match = Match.sort((a, b) => {
+                    return b.userData[0].playTime - a.userData[0].playTime;
+                })
+                const gameStats = (await Promise.all(Match.map(async(game) => {
+                    const eachPlayerPlaytimeString = game.userData.map(async (user) => {
+                        const DiscordUser = await client.users.fetch(user.user.getDiscordID());
+
+                        return `\n\t- ${DiscordUser?DiscordUser.displayName:"<failed to fetch user>"}: ~${Math.round(user.playTime/60)} hours`
+                    })
+                    const descTrimmed = game.game.detailed_description?(game.game.detailed_description.length > 100 ? game.game.detailed_description.substring(0, 100) + "..." : ""):undefined
+                    return `\n- ${game.game.getName()}\n"${descTrimmed??""}"${(await Promise.all(eachPlayerPlaytimeString)).join("")}`
+                }))).join("")
+
                 const ReviewStream = await OpenAI.promptStream(`You have ${(AdditionalUsers !== undefined? AdditionalUsers.length: 0) + 2} users: ${ReferenceUserA.username}, ${ReferenceUserB.username}${AdditionalUsers !== undefined?", "+AdditionalUsers.map((user) => user.username).join(", "):""}.
-                They want to play a game together, but are trying to figure out what they should play.\nThey have the following games in common within each of their Steam libraries: \n- ${Match.map((game) => game.getName()).join("\n- ")}\n\n`, "Based on the following games we have in common, which one do you think we should try out together?")
+                They want to play a game together, but are trying to figure out what they should play.\nThey have the following games in common within each of their Steam libraries: \n- ${(await Promise.all(gameStats)).join("")}\n\nPlease be sure to give 1-2 suggestions, with justification using the data above, as well as mentioning specific user playtime by name.`, "Based on the following games we have in common, which one do you think we should try out together?")
 
                 for await (const chunk of ReviewStream) {
                     updatedIn++;

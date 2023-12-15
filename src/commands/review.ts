@@ -42,22 +42,17 @@ export class Review extends PNFXCommand {
             try {
                 const Game = await HopOnClient.getGame(SteamGameID);
                 const IntroEmbed = PNFXEmbeds.info(`Review of ${Game.getName()}`).setImage(Game.getHeaderImage()).setDescription(`[Game Link](https://store.steampowered.com/app/${Game.getID()})`);
-                
-                let review = "";
-                let updatedIn = 0;
-                const ReviewStream = await Game.getChatGPTStreamReviewSummary()
-
-                for await (const chunk of ReviewStream) {
-                    updatedIn++;
-                    review += chunk.choices[0]?.delta.content;
-                    if(updatedIn > 40){
-                        await interaction.editReply({ embeds: [IntroEmbed, PNFXEmbeds.loading(review).setThumbnail(null), PNFXEmbeds.OpenAIPoweredFooter()] })
-                        updatedIn = 0;
+                await interaction.editReply({ embeds: [IntroEmbed, PNFXEmbeds.loading("*I'm thinking...*"), PNFXEmbeds.OpenAIPoweredFooter()] })
+                Game.getChatGPTReviewSummaryV2(async (messages?:string[]) => {
+                    console.log(messages)
+                    if(messages){
+                        await interaction.editReply({ embeds: [IntroEmbed, PNFXEmbeds.info("HopOn says...", messages.join("\n\n")).setThumbnail(null), PNFXEmbeds.OpenAIPoweredFooter()] })
+                    }else{
+                        await interaction.editReply({ embeds: [IntroEmbed, PNFXEmbeds.error("UNK", "*Looks like I can't connect to OpenAI right now... Sorry!*")] })
                     }
-                }
-                const chatCompletion = await ReviewStream.finalChatCompletion();
+                })
 
-                await interaction.editReply({ embeds: [IntroEmbed, PNFXEmbeds.info("HopOn says...", chatCompletion.choices[0].message.content).setThumbnail(null), PNFXEmbeds.OpenAIPoweredFooter()] })
+               
                 
             } catch (error) {
                 if(error instanceof HopOnError){
