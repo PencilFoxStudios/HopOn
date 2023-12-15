@@ -491,8 +491,11 @@ export class SteamGame{
     }
 
     async getChatGPTReviewSummaryV2(responseCallback:(messages:string[]|undefined) => void){
-        const prompty = `For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`;
+        let prompty = `For this prompt specifically, you are providing an executive summary of the user reviews left on the game ${this.name} in 100 words or less. To help you, the following are a bunch of user reviews on it from Steam, seperated by three asterisks (***):\n\n${(await this.getReviews()).map((review:SteamReview) => { return `(${review.voted_up?"Recommended":"Not Recommended"}) ${review.review}\n***\n`})}`;
         const Thread = await HOAI.init()
+        if(prompty.length > 30000){
+            prompty = prompty.substring(0, 30000);
+        }
         Thread.prompt(prompty, (messages:string[]|undefined) => {
             responseCallback(messages);
         })
