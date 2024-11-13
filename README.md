@@ -8,6 +8,8 @@ Would you like to [view the list of commands](#commands) or [run the bot yoursel
 ## Invite
 You can invite/authorize the bot via [Discord](https://discord.com/oauth2/authorize?client_id=1170143056104788018&scope=bot&permissions=19456).
 
+Please note that, since I'm currently a broke college student, I cannot afford to run the bot right now. I hope this code is enough of an indicator of my work and style!
+
 ## Tech Stack
 
 | Technology | Purpose |
